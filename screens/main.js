@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-  ActivityIndicator,
   FlatList,
   StyleSheet,
   View,
@@ -52,50 +51,55 @@ export default function Home() {
       });
   }, []);
 
+  const emulateDelay = handler => setTimeout(handler, 400);
+
   const setSearchFilter = text => {
-    if (text.length > 2) {
-      const newData = arrayholder.filter(item => {
-        const itemData = `${item.first_name.toUpperCase()} ${item.last_name.toUpperCase()}`;
-        const textData = text.toUpperCase();
-        return itemData.indexOf(textData) > -1;
-      });
-      setTimeout(() => {
+    emulateDelay(() => {
+      if (text.length > 2) {
+        const newData = arrayholder.filter(item => {
+          const itemData = `${item.first_name.toUpperCase()} ${item.last_name.toUpperCase()}`;
+          const textData = text.toUpperCase();
+          return itemData.indexOf(textData) > -1;
+        });
         setData(newData);
-      }, 400);
-    } else {
-      setData(arrayholder);
-    }
+      } else {
+        setData(arrayholder);
+      }
+    });
+
     setSearch(text);
   };
 
   const genderFilter = gender => {
-    if (gender !== "both") {
-      const newData = arrayholder.filter(item => item.gender === gender);
-      setTimeout(() => {
-        setData(newData);
-      }, 400);
-    } else {
-      setData(arrayholder);
-    }
+    emulateDelay(() => {
+      if (gender !== "both") {
+        setData(prev => {
+          const newData = prev.filter(item => item.gender === gender);
+          return newData;
+        });
+      } else {
+        setData(arrayholder);
+      }
+    });
 
     setGender(gender);
   };
 
   const ageFilter = (text, index) => {
-    if (text !== "") {
-      const newData = arrayholder.filter(item => {
-        const dob = moment().diff(item.dob, "years");
-        if (index === "from") {
-          return dob >= text && dob <= age.to;
-        }
-        return dob <= text && dob >= age.from;
-      });
-      setTimeout(() => {
+    emulateDelay(() => {
+      if (text !== "") {
+        const newData = arrayholder.filter(item => {
+          const dob = moment().diff(item.dob, "years");
+          if (index === "from") {
+            return dob >= text && dob <= age.to;
+          }
+          return dob <= text && dob >= age.from;
+        });
         setData(newData);
-      }, 400);
-    } else {
-      setData(arrayholder);
-    }
+      } else {
+        setData(arrayholder);
+      }
+    });
 
     if (index === "from") {
       setAge({
@@ -110,7 +114,7 @@ export default function Home() {
     }
   };
 
-  const handleReset = () => {
+  function handleReset() {
     setGender("both");
     setData(arrayholder);
     setSearch("");
@@ -118,8 +122,7 @@ export default function Home() {
       from: "0",
       to: "99"
     });
-  };
-
+  }
   const invitation = id => {
     Alert.alert(
       "Приглашение",
@@ -170,7 +173,7 @@ export default function Home() {
         </View>
 
         <FlatList
-          data={data}
+          data={data.sort((a, b) => a.first_name.localeCompare(b.first_name))}
           keyExtractor={item => item.id}
           renderItem={({ item }) => (
             <User item={item} invitation={invitation} />
