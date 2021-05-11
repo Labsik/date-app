@@ -13,7 +13,7 @@
     "alpha-scroll-flat-list": "^0.2.20",
     "axios": "^0.19.2",
     "expo": "~36.0.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "moment": "^2.24.0",
     "react": "~16.9.0",
     "react-dom": "~16.9.0",
